@@ -1,0 +1,34 @@
+package com.example.leboncointest
+
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.example.leboncointest.data.Album
+import kotlinx.android.synthetic.main.image_list_item.view.*
+
+class ImageListAdapter(var albumList: List<Album>) : RecyclerView.Adapter<ImageListAdapter.AlbumViewHolder>() {
+
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): AlbumViewHolder {
+        val inflatedView = LayoutInflater.from(p0.context).inflate(R.layout.image_list_item, p0, false)
+        return AlbumViewHolder(inflatedView)
+    }
+
+    override fun getItemCount(): Int = albumList.size
+
+    override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
+        val album = albumList[position]
+        holder.bindAlbum(album)
+    }
+
+    inner class AlbumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private var album: Album? = null
+
+        fun bindAlbum(album: Album) {
+            this.album = album
+            Glide.with(itemView.context).load(album.url).into(itemView.itemImage)
+            itemView.itemTitle.text = album.title
+        }
+    }
+}
