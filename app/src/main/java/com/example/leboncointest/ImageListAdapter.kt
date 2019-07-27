@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.leboncointest.data.Album
 import kotlinx.android.synthetic.main.image_list_item.view.*
 
@@ -27,7 +28,11 @@ class ImageListAdapter(var albumList: List<Album>) : RecyclerView.Adapter<ImageL
 
         fun bindAlbum(album: Album) {
             this.album = album
-            Glide.with(itemView.context).load(album.url).into(itemView.itemImage)
+            Glide.with(itemView.context)
+                .load(album.url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(itemView.itemImage)
+
             itemView.itemTitle.text = album.title
         }
     }
