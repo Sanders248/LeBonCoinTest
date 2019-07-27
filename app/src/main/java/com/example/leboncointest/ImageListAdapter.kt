@@ -26,6 +26,9 @@ class ImageListAdapter(var albumList: List<Album>) : RecyclerView.Adapter<ImageL
     inner class AlbumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var album: Album? = null
 
+        /**
+         * Bind an album to the itemView and keep image in cache
+         */
         fun bindAlbum(album: Album) {
             this.album = album
             Glide.with(itemView.context)

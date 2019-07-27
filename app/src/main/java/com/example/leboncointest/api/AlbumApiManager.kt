@@ -8,6 +8,9 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ *
+ */
 class AlbumApiManager {
     private val albumApi: IAlbumApi
     private val baseUrl = "http://jsonplaceholder.typicode.com/"

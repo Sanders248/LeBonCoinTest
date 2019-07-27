@@ -8,6 +8,9 @@ import com.google.gson.reflect.TypeToken
 
 const val KEY_ALBUM_LIST = "ALBUM_LIST"
 
+/**
+ * this class manage the sharedPreference of the app
+ */
 class SharedPreferenceManager(var context: Context?) {
     fun putAlbumList(albumList: List<Album>) {
         val gson = GsonBuilder().create()
