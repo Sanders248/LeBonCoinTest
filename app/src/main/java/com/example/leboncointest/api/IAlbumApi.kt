@@ -1,10 +1,10 @@
 package com.example.leboncointest.api
 
 import com.example.leboncointest.data.Album
-import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.http.GET
 
 interface IAlbumApi {
     @GET ("photos")
-    fun getAlbumList() : Observable<List<Album>>
+    fun getAlbumList() : Single<List<Album>>
 }

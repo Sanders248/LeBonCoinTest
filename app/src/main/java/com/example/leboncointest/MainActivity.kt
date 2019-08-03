@@ -28,6 +28,11 @@ class MainActivity : AppCompatActivity() {
         presenter.showListView()
     }
 
+    override fun onPause() {
+        super.onPause()
+        presenter.disposable?.dispose()
+    }
+
     private fun initListView() {
         val viewManager = LinearLayoutManager(this)
         viewAdapter = ImageListAdapter(emptyList())
