@@ -1,6 +1,7 @@
 package com.example.leboncointest.tools
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.example.leboncointest.data.Album
 import com.google.gson.GsonBuilder
@@ -11,10 +12,11 @@ const val KEY_ALBUM_LIST = "ALBUM_LIST"
 /**
  * this class manage the sharedPreference of the app
  */
-class SharedPreferenceManager(var context: Context?) {
+class SharedPreferenceManager(context: Context?) {
+    private val gson = GsonBuilder().create()
+    private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
     fun putAlbumList(albumList: List<Album>) {
-        val gson = GsonBuilder().create()
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val json = gson.toJson(albumList)
         val editor = preferences.edit()
 
@@ -23,8 +25,6 @@ class SharedPreferenceManager(var context: Context?) {
     }
 
     fun getAlbumList(): List<Album> {
-        val gson = GsonBuilder().create()
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val json = preferences.getString(KEY_ALBUM_LIST, null)
         val listType = object : TypeToken<ArrayList<Album>>() {}.type
 
