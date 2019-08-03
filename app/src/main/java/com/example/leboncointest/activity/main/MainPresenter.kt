@@ -10,7 +10,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class MainPresenter(private val sharedPreferenceManager: SharedPreferenceManager)
+class MainPresenter(private val sharedPreferenceManager: SharedPreferenceManager?)
     : BasePresenter<MainContract.view>(), MainContract.Presenter {
 
     private val TAG = "MainPresenter"
@@ -27,13 +27,13 @@ class MainPresenter(private val sharedPreferenceManager: SharedPreferenceManager
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                     onSuccess = { albumList ->
-                        sharedPreferenceManager.putAlbumList(albumList)
+                        sharedPreferenceManager?.putAlbumList(albumList)
                         updateAlbumListView(albumList)
                     },
                     onError = { Log.e(TAG, "getAlbumList onError: $it") }
                 )
         } else {
-            val albumList = sharedPreferenceManager.getAlbumList()
+            val albumList = sharedPreferenceManager?.getAlbumList() ?: emptyList()
             updateAlbumListView(albumList)
         }
     }
