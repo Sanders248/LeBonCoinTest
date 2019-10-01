@@ -1,17 +1,17 @@
 package com.example.leboncointest.activity.main
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.widget.Toast
 import com.example.leboncointest.R
 import com.example.leboncointest.data.Album
-import com.example.leboncointest.tools.CommonUtils
-import com.example.leboncointest.tools.SharedPreferenceManager
 import kotlinx.android.synthetic.main.activity_main.*
+import com.example.leboncointest.activity.main.MainViewModel.AlbumState.*
 
 /**
  * MainActivity display a list of Album
@@ -32,14 +32,17 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         initListView()
-        showProgressBar(true)
-
-        viewModel.loadAlbumList()
 
         viewModel.albumList.observe(this, Observer {
             it?.let {
-                reloadAlbumList(it)
-                showProgressBar(false)
+                when(it) {
+                    is Loading -> showProgressBar(true)
+                    is Failure -> Snackbar.make(listView, getString(R.string.error_loading), Snackbar.LENGTH_SHORT).show()
+                    is AlbumList -> {
+                        reloadAlbumList(it.albumList)
+                        showProgressBar(false)
+                    }
+                }
             }
         })
     }
