@@ -1,5 +1,8 @@
 package com.example.leboncointest.activity.main
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -14,31 +17,32 @@ import kotlinx.android.synthetic.main.activity_main.*
  * MainActivity display a list of Album
  * It show the image (from url) and the title of each Album
  */
-class MainActivity : AppCompatActivity(), MainContract.view {
+class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
 
     private lateinit var viewAdapter: ImageListAdapter
-    private lateinit var presenter: MainPresenter
 
-    // activity lifecycle
+    private lateinit var viewModel: MainViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        presenter = MainPresenter(SharedPreferenceManager(applicationContext)).apply { setView(this@MainActivity) }
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
         initListView()
+        showProgressBar(true)
 
-        presenter.showListView()
+        viewModel.loadAlbumList()
+
+        viewModel.albumList.observe(this, Observer {
+            it?.let {
+                reloadAlbumList(it)
+                showProgressBar(false)
+            }
+        })
     }
-
-    override fun onPause() {
-        super.onPause()
-        presenter.dispose()
-    }
-
-    // init methods
 
     private fun initListView() {
         val viewManager = LinearLayoutManager(this)
@@ -51,16 +55,12 @@ class MainActivity : AppCompatActivity(), MainContract.view {
         }
     }
 
-    // MainContract.view
-
-    override fun showProgressBar(show: Boolean) {
+    private fun showProgressBar(show: Boolean) {
         progressBar.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    override fun reloadAlbumList(albumList: List<Album>) {
+    private fun reloadAlbumList(albumList: List<Album>) {
         viewAdapter.albumList = albumList
         viewAdapter.notifyDataSetChanged()
     }
-
-    override fun isNetworkAvailable(): Boolean = CommonUtils.isNetworkAvailable(this)
 }
