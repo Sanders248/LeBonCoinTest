@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import android.widget.Toast
 import com.example.leboncointest.R
 import com.example.leboncointest.data.Album
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,15 +28,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, MainViewModel.BaseViewModelFactory(application, savedInstanceState)).get(MainViewModel::class.java)
 
         initListView()
 
         viewModel.albumList.observe(this, Observer {
-            it?.let {
+            it?.getContent()?.let {
                 when(it) {
                     is Loading -> showProgressBar(true)
-                    is Failure -> Snackbar.make(listView, getString(R.string.error_loading), Snackbar.LENGTH_SHORT).show()
+                    is Failure -> {
+                        Snackbar.make(listView, getString(R.string.error_loading), Snackbar.LENGTH_SHORT).show()
+                        showProgressBar(false)
+                    }
                     is AlbumList -> {
                         reloadAlbumList(it.albumList)
                         showProgressBar(false)
@@ -45,6 +47,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.let { viewModel.onSavedInstanceState(it) }
     }
 
     private fun initListView() {
